@@ -1,0 +1,72 @@
+site_name: SQL Master Guide
+site_description: Полное руководство по изучению SQL
+site_author: DaniilGavrin
+repo_url: https://github.com/DaniilGavrin/sql-master-guide
+repo_name: DaniilGavrin/sql-master-guide
+
+theme:
+  name: material
+  language: ru
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.expand
+    - navigation.indexes
+    - toc.integrate
+    - search.suggest
+    - search.highlight
+    - content.tabs.link
+    - content.code.annotation
+    - content.code.copy
+  palette:
+    - scheme: default
+      toggle:
+        icon: material/toggle-switch-off-outline
+        name: Switch to dark mode
+      primary: blue
+      accent: blue
+    - scheme: slate
+      toggle:
+        icon: material/toggle-switch
+        name: Switch to light mode
+      primary: blue
+      accent: blue
+
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - admonition
+  - pymdownx.arithmatex:
+      generic: true
+  - footnotes
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.mark
+  - attr_list
+  - pymdownx.emoji:
+      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_generator: !!python/name:materialx.emoji.to_svg
+  - abbr
+  - def_list
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - toc:
+      permalink: true
+
+nav:
+  - Главная: index.md
+  - Основы: 
+    - Введение: basics/introduction.md
+  - Продвинутые темы:
+    - Скоро будет: advanced/coming-soon.md
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/DaniilGavrin
+    - icon: fontawesome/brands/docker
+      link: https://hub.docker.com/
+
+copyright: Copyright &copy; 2024 DaniilGavrin
