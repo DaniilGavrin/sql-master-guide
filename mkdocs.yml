@@ -65,6 +65,12 @@ nav:
     - INSERT: basics/insert.md
     - UPDATE: basics/update.md
     - DELETE: basics/delete.md
+  - MySQL:
+    - Установка и настройка: mysql/installation.md
+    - Шпаргалка: mysql/cheatsheet.md
+  - PostgreSQL:
+    - Установка и настройка: postgresql/installation.md
+    - Шпаргалка: postgresql/cheatsheet.md
   - Продвинутые темы:
     - JOIN таблиц: advanced/joins.md
     - Агрегатные функции: advanced/aggregates.md
