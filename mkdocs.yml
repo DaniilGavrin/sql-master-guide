@@ -57,8 +57,14 @@ markdown_extensions:
 
 nav:
   - Главная: index.md
-  - Основы: 
+  - Основы SQL:
     - Введение: basics/introduction.md
+    - SELECT: basics/select.md
+    - WHERE: basics/where.md
+    - ORDER BY: basics/order-by.md
+    - INSERT: basics/insert.md
+    - UPDATE: basics/update.md
+    - DELETE: basics/delete.md
   - Продвинутые темы:
     - Скоро будет: advanced/coming-soon.md
 
