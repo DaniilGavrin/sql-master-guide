@@ -66,7 +66,16 @@ nav:
     - UPDATE: basics/update.md
     - DELETE: basics/delete.md
   - Продвинутые темы:
-    - Скоро будет: advanced/coming-soon.md
+    - JOIN таблиц: advanced/joins.md
+    - Агрегатные функции: advanced/aggregates.md
+    - Подзапросы: advanced/subqueries.md
+    - Оконные функции: advanced/window-functions.md
+    - CTE: advanced/cte.md
+    - Индексы и оптимизация: advanced/indexes.md
+    - Транзакции: advanced/transactions.md
+    - Процедуры и функции: advanced/procedures.md
+  - Справочник:
+    - SQL команды и типы данных: reference/index.md
 
 extra:
   social:

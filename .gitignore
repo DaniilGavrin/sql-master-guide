@@ -1,30 +1,4 @@
 ```
-# Build artifacts and generated files
-site/
-*.html
-search_index.json
-
-# Cache and temporary files
-.cache/
-*.tmp
-*.temp
-
-# Logs
-*.log
-
-# Environment files
-.env
-.env.local
-*.env.*
-
-# IDE and editor files
-.vscode/
-.idea/
-*.swp
-*.swo
-
-# Dependencies (if any)
-node_modules/
-__pycache__/
-*.egg-info/
+# Search index
+site/search/search_index.json
 ```
