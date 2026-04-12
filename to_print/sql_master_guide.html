@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>SQL Master Guide</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 2cm;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 10pt;
+            line-height: 1.5;
+            color: #333;
+        }
+        
+        h1 {
+            font-size: 16pt;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 30px;
+            color: #2c3e50;
+        }
+        
+        h2 {
+            font-size: 12pt;
+            font-weight: bold;
+            text-align: center;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            color: #34495e;
+            page-break-before: always;
+        }
+        
+        h2:first-of-type {
+            page-break-before: avoid;
+        }
+        
+        h3 {
+            font-size: 11pt;
+            font-weight: bold;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            color: #7f8c8d;
+        }
+        
+        h4 {
+            font-size: 10pt;
+            font-weight: bold;
+            margin-top: 15px;
+            margin-bottom: 8px;
+            font-style: italic;
+        }
+        
+        p {
+            margin-bottom: 10px;
+            text-align: justify;
+        }
+        
+        ul, ol {
+            margin-bottom: 10px;
+            padding-left: 25px;
+        }
+        
+        li {
+            margin-bottom: 5px;
+        }
+        
+        pre {
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 12px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 9pt;
+            margin: 15px 0;
+        }
+        
+        code {
+            font-family: 'Courier New', monospace;
+            font-size: 9pt;
+            background-color: #f8f9fa;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        
+        pre code {
+            background-color: transparent;
+            padding: 0;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            font-size: 9pt;
+        }
+        
+        th, td {
+            border: 1px solid #dee2e6;
+            padding: 8px;
+            text-align: left;
+        }
+        
+        th {
+            background-color: #f8f9fa;
+            font-weight: bold;
+        }
+        
+        blockquote {
+            border-left: 4px solid #3498db;
+            margin: 15px 0;
+            padding: 10px 15px;
+            background-color: #f8f9fa;
+            font-style: italic;
+        }
+        
+        hr {
+            border: none;
+            border-top: 2px solid #dee2e6;
+            margin: 30px 0;
+        }
+        
+        .toc {
+            page-break-after: always;
+        }
+        
+        .toc h2 {
+            text-align: center;
+            color: #2c3e50;
+        }
+        
+        .toc ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        
+        .toc li {
+            margin-bottom: 8px;
+        }
+        
+        .toc a {
+            text-decoration: none;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+
+<div class="toc">
+    <h1>SQL Master Guide: Полное руководство и шпаргалка</h1>
+    <h2>Оглавление</h2>
+    <ul>
+        <li><a href="#basics">1. Основы SQL</a></li>
+        <li><a href="#advanced">2. Продвинутые темы</a></li>
+        <li><a href="#mysql">3. MySQL Специфика</a></li>
+        <li><a href="#postgresql">4. PostgreSQL Специфика</a></li>
+        <li><a href="#reference">5. Справочник команд</a></li>
+    </ul>
+</div>
+
+<h2 id="basics">Основы SQL</h2>
+
+<h3>Введение в SQL</h3>
+
+<p><strong>SQL (Structured Query Language)</strong> — стандартизированный язык программирования для работы с реляционными базами данных.</p>
+
+<h4>Ключевые концепции</h4>
+<ul>
+    <li><strong>Реляционная модель</strong>: Данные организованы в таблицы (relations) со строками и столбцами.</li>
+    <li><strong>Первичный ключ (Primary Key)</strong>: Уникальный идентификатор строки.</li>
+    <li><strong>Внешний ключ (Foreign Key)</strong>: Ссылка на первичный ключ другой таблицы.</li>
+    <li><strong>Нормализация</strong>: Процесс организации данных для уменьшения избыточности.</li>
+</ul>
+
+<h4>Популярные СУБД</h4>
+<ul>
+    <li><strong>MySQL</strong>: Популярная открытая СУБД, известная скоростью и простотой.</li>
+    <li><strong>PostgreSQL</strong>: Мощная открытая СУБД с поддержкой сложных запросов и расширений.</li>
+    <li><strong>SQLite</strong>: Легковесная встроенная СУБД.</li>
+    <li><strong>Oracle, SQL Server</strong>: Проприетарные корпоративные решения.</li>
+</ul>
+
+<hr>
+
+<h3>SELECT: Выборка данных</h3>
+
+<p>Базовый оператор для получения данных из базы.</p>
+
+<h4>Синтаксис</h4>
+<pre><code>SELECT column1, column2, ...
+FROM table_name;</code></pre>
+
+<h4>Выбор всех колонок</h4>
+<pre><code>SELECT * FROM users;</code></pre>
+
+<h4>DISTINCT: Уникальные значения</h4>
+<pre><code>SELECT DISTINCT country FROM users;</code></pre>
+
+<h4>LIMIT: Ограничение количества строк</h4>
+<pre><code>SELECT * FROM products LIMIT 10;</code></pre>
+
+<h4>Псевдонимы (AS)</h4>
+<pre><code>SELECT first_name AS name, email AS contact FROM users;</code></pre>
+
+<hr>
+
+<h3>WHERE: Фильтрация данных</h3>
+
+<p>Используется для выбора записей, соответствующих условиям.</p>
+
+<h4>Операторы сравнения</h4>
+<ul>
+    <li><code>=</code> (равно)</li>
+    <li><code>&lt;&gt;</code> или <code>!=</code> (не равно)</li>
+    <li><code>&gt;</code>, <code>&lt;</code>, <code>&gt;=</code>, <code>&lt;=</code></li>
+</ul>
+
+<h4>Примеры</h4>
+<pre><code>SELECT * FROM users WHERE age &gt; 18;
+SELECT * FROM products WHERE price = 100;</code></pre>
+
+<h4>Логические операторы</h4>
+<ul>
+    <li><code>AND</code>: Оба условия истинны.</li>
+    <li><code>OR</code>: Хотя бы одно условие истинно.</li>
+    <li><code>NOT</code>: Инверсия условия.</li>
+</ul>
+
+<pre><code>SELECT * FROM users WHERE age &gt; 18 AND country = 'Russia';</code></pre>
+
+<h4>LIKE: Поиск по шаблону</h4>
+<ul>
+    <li><code>%</code>: Любое количество символов.</li>
+    <li><code>_</code>: Один символ.</li>
+</ul>
+
+<pre><code>SELECT * FROM users WHERE name LIKE 'A%'; -- Начинается на A
+SELECT * FROM users WHERE email LIKE '%@gmail.com';</code></pre>
+
+<h4>BETWEEN: Диапазон значений</h4>
+<pre><code>SELECT * FROM products WHERE price BETWEEN 10 AND 50;</code></pre>
+
+<h4>IN: Список значений</h4>
+<pre><code>SELECT * FROM users WHERE country IN ('Russia', 'USA', 'Germany');</code></pre>
+
+<h4>IS NULL: Проверка на пустоту</h4>
+<pre><code>SELECT * FROM users WHERE phone IS NULL;</code></pre>
+
+<hr>
+
+<h3>ORDER BY: Сортировка</h3>
+
+<p>Сортирует результат запроса.</p>
+
+<h4>Синтаксис</h4>
+<pre><code>SELECT * FROM products ORDER BY price DESC;</code></pre>
+
+<h4>Сортировка по нескольким полям</h4>
+<pre><code>SELECT * FROM users ORDER BY country ASC, age DESC;</code></pre>
+
+<hr>
+
+<h3>INSERT: Добавление данных</h3>
+
+<p>Добавляет новые строки в таблицу.</p>
+
+<h4>Вставка одной строки</h4>
+<pre><code>INSERT INTO users (name, email, age)
+VALUES ('Ivan', 'ivan@example.com', 25);</code></pre>
+
+<h4>Вставка нескольких строк</h4>
+<pre><code>INSERT INTO users (name, email, age)
+VALUES 
+    ('Petr', 'petr@example.com', 30),
+    ('Anna', 'anna@example.com', 22);</code></pre>
+
+<h4>Вставка из другой таблицы</h4>
+<pre><code>INSERT INTO active_users
+SELECT * FROM users WHERE last_login &gt; '2023-01-01';</code></pre>
+
+<hr>
+
+<h3>UPDATE: Обновление данных</h3>
+
+<p>Изменяет существующие записи.</p>
+
+<h4>Синтаксис</h4>
+<pre><code>UPDATE table_name
+SET column1 = value1, column2 = value2
+WHERE condition;</code></pre>
+
+<h4>Пример</h4>
+<pre><code>UPDATE users
+SET age = 26, email = 'new@example.com'
+WHERE name = 'Ivan';</code></pre>
+
+<blockquote>
+    <strong>Важно:</strong> Всегда используйте <code>WHERE</code>, иначе обновятся все строки!
+</blockquote>
+
+<hr>
+
+<h3>DELETE: Удаление данных</h3>
+
+<p>Удаляет строки из таблицы.</p>
+
+<h4>Синтаксис</h4>
+<pre><code>DELETE FROM table_name WHERE condition;</code></pre>
+
+<h4>Пример</h4>
+<pre><code>DELETE FROM users WHERE id = 5;</code></pre>
+
+<h4>Сравнение с TRUNCATE</h4>
+<ul>
+    <li><code>DELETE</code>: Удаляет строки по условию, можно откатить, медленнее.</li>
+    <li><code>TRUNCATE</code>: Удаляет всю таблицу полностью, быстрее, сбрасывает автоинкремент.</li>
+</ul>
+
+<pre><code>TRUNCATE TABLE users;</code></pre>
+
+<h2 id="advanced">Продвинутые темы</h2>
+
+<h3>JOIN: Соединение таблиц</h3>
+
+<p>Объединяет строки из двух или более таблиц.</p>
+
+<h4>Типы соединений</h4>
+<ol>
+    <li><strong>INNER JOIN</strong>: Только совпадающие строки.</li>
+    <li><strong>LEFT JOIN</strong>: Все строки левой таблицы + совпадения правой.</li>
+    <li><strong>RIGHT JOIN</strong>: Все строки правой таблицы + совпадения левой.</li>
+    <li><strong>FULL OUTER JOIN</strong>: Все строки обеих таблиц.</li>
+    <li><strong>CROSS JOIN</strong>: Декартово произведение.</li>
+</ol>
+
+<h4>Пример INNER JOIN</h4>
+<pre><code>SELECT u.name, o.order_date
+FROM users u
+INNER JOIN orders o ON u.id = o.user_id;</code></pre>
+
+<h4>Пример LEFT JOIN</h4>
+<pre><code>SELECT u.name, o.order_date
+FROM users u
+LEFT JOIN orders o ON u.id = o.user_id;
+-- Покажет всех пользователей, даже без заказов</code></pre>
+
+<hr>
+
+<h3>Агрегатные функции и группировка</h3>
+
+<p>Функции для вычислений над наборами данных.</p>
+
+<h4>Основные функции</h4>
+<ul>
+    <li><code>COUNT()</code>: Количество строк.</li>
+    <li><code>SUM()</code>: Сумма значений.</li>
+    <li><code>AVG()</code>: Среднее значение.</li>
+    <li><code>MIN()</code>: Минимальное значение.</li>
+    <li><code>MAX()</code>: Максимальное значение.</li>
+</ul>
+
+<h4>GROUP BY: Группировка</h4>
+<pre><code>SELECT country, COUNT(*) as user_count
+FROM users
+GROUP BY country;</code></pre>
+
+<h4>HAVING: Фильтрация групп</h4>
+<pre><code>SELECT country, COUNT(*) as user_count
+FROM users
+GROUP BY country
+HAVING COUNT(*) &gt; 10;</code></pre>
+
+<hr>
+
+<h3>Подзапросы</h3>
+
+<p>Запрос внутри другого запроса.</p>
+
+<h4>Подзапрос в WHERE</h4>
+<pre><code>SELECT name FROM users
+WHERE id IN (SELECT user_id FROM orders WHERE amount &gt; 1000);</code></pre>
+
+<h4>EXISTS: Проверка существования</h4>
+<pre><code>SELECT name FROM users u
+WHERE EXISTS (SELECT 1 FROM orders o WHERE o.user_id = u.id);</code></pre>
+
+<h4>Коррелированный подзапрос</h4>
+<pre><code>SELECT name, 
+       (SELECT COUNT(*) FROM orders WHERE user_id = u.id) as order_count
+FROM users u;</code></pre>
+
+<hr>
+
+<h3>Оконные функции</h3>
+
+<p>Выполняют вычисления над набором строк, связанных с текущей.</p>
+
+<h4>Синтаксис</h4>
+<pre><code>FUNCTION() OVER (PARTITION BY ... ORDER BY ...)</code></pre>
+
+<h4>ROW_NUMBER: Нумерация строк</h4>
+<pre><code>SELECT name, salary,
+       ROW_NUMBER() OVER (ORDER BY salary DESC) as rank
+FROM employees;</code></pre>
+
+<h4>RANK и DENSE_RANK</h4>
+<ul>
+    <li><code>RANK()</code>: Пропускает номера при равных значениях.</li>
+    <li><code>DENSE_RANK()</code>: Не пропускает номера.</li>
+</ul>
+
+<h4>LAG и LEAD: Доступ к соседним строкам</h4>
+<pre><code>SELECT date, sales,
+       LAG(sales, 1) OVER (ORDER BY date) as prev_sales
+FROM daily_sales;</code></pre>
+
+<h4>Накопительный итог</h4>
+<pre><code>SELECT date, sales,
+       SUM(sales) OVER (ORDER BY date) as total_sales
+FROM daily_sales;</code></pre>
+
+<hr>
+
+<h3>CTE (Common Table Expressions)</h3>
+
+<p>Временные именованные наборы результатов.</p>
+
+<h4>Обычный CTE</h4>
+<pre><code>WITH high_salary_users AS (
+    SELECT * FROM users WHERE salary &gt; 100000
+)
+SELECT * FROM high_salary_users;</code></pre>
+
+<h4>Рекурсивный CTE</h4>
+<pre><code>WITH RECURSIVE numbers AS (
+    SELECT 1 as n
+    UNION ALL
+    SELECT n + 1 FROM numbers WHERE n &lt; 10
+)
+SELECT * FROM numbers;</code></pre>
+
+<hr>
+
+<h3>Индексы и оптимизация</h3>
+
+<p>Индексы ускоряют поиск данных.</p>
+
+<h4>Типы индексов</h4>
+<ul>
+    <li><strong>B-Tree</strong>: Стандартный, для диапазонов и сортировки.</li>
+    <li><strong>Hash</strong>: Для точного совпадения (=).</li>
+    <li><strong>GiST/GIN</strong>: Для полнотекстового поиска и массивов (PostgreSQL).</li>
+</ul>
+
+<h4>Создание индекса</h4>
+<pre><code>CREATE INDEX idx_users_email ON users(email);</code></pre>
+
+<h4>EXPLAIN: Анализ плана выполнения</h4>
+<pre><code>EXPLAIN SELECT * FROM users WHERE email = 'test@example.com';</code></pre>
+
+<h4>Советы по оптимизации</h4>
+<ol>
+    <li>Используйте индексы на полях в <code>WHERE</code> и <code>JOIN</code>.</li>
+    <li>Избегайте <code>SELECT *</code>, выбирайте только нужные колонки.</li>
+    <li>Используйте <code>LIMIT</code> для больших выборок.</li>
+    <li>Анализируйте планы выполнения через <code>EXPLAIN</code>.</li>
+</ol>
+
+<hr>
+
+<h3>Транзакции</h3>
+
+<p>Последовательность операций как единое целое.</p>
+
+<h4>Свойства ACID</h4>
+<ul>
+    <li><strong>Atomicity (Атомарность)</strong>: Всё или ничего.</li>
+    <li><strong>Consistency (Согласованность)</strong>: Переход из одного валидного состояния в другое.</li>
+    <li><strong>Isolation (Изоляция)</strong>: Параллельные транзакции не мешают друг другу.</li>
+    <li><strong>Durability (Долговечность)</strong>: Сохранение после завершения.</li>
+</ul>
+
+<h4>Управление транзакциями</h4>
+<pre><code>BEGIN;
+UPDATE accounts SET balance = balance - 100 WHERE id = 1;
+UPDATE accounts SET balance = balance + 100 WHERE id = 2;
+COMMIT; -- Или ROLLBACK для отмены</code></pre>
+
+<h4>Уровни изоляции</h4>
+<ol>
+    <li><strong>Read Uncommitted</strong>: Чтение "грязных" данных.</li>
+    <li><strong>Read Committed</strong>: Чтение только закоммиченных (по умолчанию в PostgreSQL).</li>
+    <li><strong>Repeatable Read</strong>: Гарантированное повторное чтение.</li>
+    <li><strong>Serializable</strong>: Полная изоляция.</li>
+</ol>
+
+<hr>
+
+<h3>Хранимые процедуры и функции</h3>
+
+<h4>Создание процедуры (PostgreSQL)</h4>
+<pre><code>CREATE OR REPLACE PROCEDURE transfer_money(
+    from_id INT, to_id INT, amount DECIMAL
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    UPDATE accounts SET balance = balance - amount WHERE id = from_id;
+    UPDATE accounts SET balance = balance + amount WHERE id = to_id;
+END;
+$$;</code></pre>
+
+<h4>Вызов процедуры</h4>
+<pre><code>CALL transfer_money(1, 2, 100);</code></pre>
+
+<h4>Создание функции</h4>
+<pre><code>CREATE OR REPLACE FUNCTION get_user_name(user_id INT)
+RETURNS TEXT AS $$
+DECLARE
+    name_val TEXT;
+BEGIN
+    SELECT name INTO name_val FROM users WHERE id = user_id;
+    RETURN name_val;
+END;
+$$ LANGUAGE plpgsql;</code></pre>
+
+<h2 id="mysql">MySQL Специфика</h2>
+
+<h3>Установка и подключение</h3>
+
+<h4>Установка на Ubuntu</h4>
+<pre><code>sudo apt update
+sudo apt install mysql-server
+sudo mysql_secure_installation</code></pre>
+
+<h4>Подключение</h4>
+<pre><code>mysql -u root -p</code></pre>
+
+<h4>Создание пользователя и БД</h4>
+<pre><code>CREATE DATABASE mydb;
+CREATE USER 'user'@'localhost' IDENTIFIED BY 'password';
+GRANT ALL PRIVILEGES ON mydb.* TO 'user'@'localhost';
+FLUSH PRIVILEGES;</code></pre>
+
+<h3>Особенности MySQL</h3>
+
+<h4>Движки хранения</h4>
+<ul>
+    <li><strong>InnoDB</strong>: Транзакции, внешние ключи (по умолчанию).</li>
+    <li><strong>MyISAM</strong>: Быстрое чтение, нет транзакций.</li>
+</ul>
+
+<h4>Специфические типы данных</h4>
+<ul>
+    <li><code>TINYINT(1)</code>: Часто используется для булевых значений.</li>
+    <li><code>ENUM</code>: Перечисление значений.</li>
+    <li><code>SET</code>: Множество значений.</li>
+</ul>
+
+<h4>Функции</h4>
+<ul>
+    <li><code>NOW()</code>: Текущая дата и время.</li>
+    <li><code>IFNULL(val, replacement)</code>: Замена NULL.</li>
+    <li><code>LIMIT</code>: Обязательно для обновления/удаления с сортировкой.</li>
+</ul>
+
+<h4>Шпаргалка команд MySQL</h4>
+<table>
+    <tr>
+        <th>Команда</th>
+        <th>Описание</th>
+    </tr>
+    <tr>
+        <td><code>SHOW DATABASES;</code></td>
+        <td>Список баз данных</td>
+    </tr>
+    <tr>
+        <td><code>USE db_name;</code></td>
+        <td>Выбор базы</td>
+    </tr>
+    <tr>
+        <td><code>SHOW TABLES;</code></td>
+        <td>Список таблиц</td>
+    </tr>
+    <tr>
+        <td><code>DESCRIBE table;</code></td>
+        <td>Структура таблицы</td>
+    </tr>
+    <tr>
+        <td><code>SHOW PROCESSLIST;</code></td>
+        <td>Активные процессы</td>
+    </tr>
+    <tr>
+        <td><code>KILL process_id;</code></td>
+        <td>Убить процесс</td>
+    </tr>
+</table>
+
+<h2 id="postgresql">PostgreSQL Специфика</h2>
+
+<h3>Установка и подключение</h3>
+
+<h4>Установка на Ubuntu</h4>
+<pre><code>sudo apt update
+sudo apt install postgresql postgresql-contrib</code></pre>
+
+<h4>Подключение</h4>
+<pre><code>sudo -u postgres psql</code></pre>
+
+<h4>Создание пользователя и БД</h4>
+<pre><code>CREATE DATABASE mydb;
+CREATE USER user WITH PASSWORD 'password';
+GRANT ALL PRIVILEGES ON DATABASE mydb TO user;</code></pre>
+
+<h3>Особенности PostgreSQL</h3>
+
+<h4>Продвинутые типы данных</h4>
+<ul>
+    <li><code>JSONB</code>: Бинарный JSON с индексацией.</li>
+    <li><code>ARRAY</code>: Массивы любого типа.</li>
+    <li><code>UUID</code>: Уникальные идентификаторы.</li>
+    <li><code>HSTORE</code>: Ключ-значение.</li>
+</ul>
+
+<h4>Расширения</h4>
+<pre><code>CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+CREATE EXTENSION IF NOT EXISTS "pg_trgm"; -- Поиск по подстроке</code></pre>
+
+<h4>Специфические функции</h4>
+<ul>
+    <li><code>CURRENT_TIMESTAMP</code>: Текущее время.</li>
+    <li><code>COALESCE(val, replacement)</code>: Замена NULL (стандарт).</li>
+    <li><code>STRING_AGG()</code>: Конкатенация строк.</li>
+    <li><code>::type</code>: Быстрое приведение типов (<code>'123'::int</code>).</li>
+</ul>
+
+<h4>Шпаргалка команд PostgreSQL</h4>
+<table>
+    <tr>
+        <th>Команда</th>
+        <th>Описание</th>
+    </tr>
+    <tr>
+        <td><code>\l</code></td>
+        <td>Список баз данных</td>
+    </tr>
+    <tr>
+        <td><code>\c db_name</code></td>
+        <td>Подключение к базе</td>
+    </tr>
+    <tr>
+        <td><code>\dt</code></td>
+        <td>Список таблиц</td>
+    </tr>
+    <tr>
+        <td><code>\d table</code></td>
+        <td>Описание таблицы</td>
+    </tr>
+    <tr>
+        <td><code>\du</code></td>
+        <td>Список пользователей</td>
+    </tr>
+    <tr>
+        <td><code>\q</code></td>
+        <td>Выход</td>
+    </tr>
+</table>
+
+<h2 id="reference">Справочник команд</h2>
+
+<h3>Категории команд</h3>
+
+<h4>DDL (Data Definition Language)</h4>
+<ul>
+    <li><code>CREATE</code>: Создание объектов.</li>
+    <li><code>ALTER</code>: Изменение структуры.</li>
+    <li><code>DROP</code>: Удаление объектов.</li>
+    <li><code>TRUNCATE</code>: Очистка таблицы.</li>
+</ul>
+
+<h4>DML (Data Manipulation Language)</h4>
+<ul>
+    <li><code>INSERT</code>: Вставка данных.</li>
+    <li><code>UPDATE</code>: Обновление данных.</li>
+    <li><code>DELETE</code>: Удаление данных.</li>
+</ul>
+
+<h4>DQL (Data Query Language)</h4>
+<ul>
+    <li><code>SELECT</code>: Выборка данных.</li>
+</ul>
+
+<h4>DCL (Data Control Language)</h4>
+<ul>
+    <li><code>GRANT</code>: Предоставление прав.</li>
+    <li><code>REVOKE</code>: Отзыв прав.</li>
+</ul>
+
+<h4>TCL (Transaction Control Language)</h4>
+<ul>
+    <li><code>COMMIT</code>: Фиксация транзакции.</li>
+    <li><code>ROLLBACK</code>: Откат транзакции.</li>
+    <li><code>SAVEPOINT</code>: Точка сохранения.</li>
+</ul>
+
+<h3>Типы данных (Стандартные)</h3>
+
+<table>
+    <tr>
+        <th>Тип</th>
+        <th>Описание</th>
+        <th>Пример</th>
+    </tr>
+    <tr>
+        <td><code>INT</code></td>
+        <td>Целое число</td>
+        <td>100</td>
+    </tr>
+    <tr>
+        <td><code>DECIMAL(p, s)</code></td>
+        <td>Точное число</td>
+        <td>10.50</td>
+    </tr>
+    <tr>
+        <td><code>VARCHAR(n)</code></td>
+        <td>Строка переменной длины</td>
+        <td>'Hello'</td>
+    </tr>
+    <tr>
+        <td><code>TEXT</code></td>
+        <td>Длинный текст</td>
+        <td>'Long text...'</td>
+    </tr>
+    <tr>
+        <td><code>DATE</code></td>
+        <td>Дата</td>
+        <td>'2023-01-01'</td>
+    </tr>
+    <tr>
+        <td><code>TIMESTAMP</code></td>
+        <td>Дата и время</td>
+        <td>'2023-01-01 12:00:00'</td>
+    </tr>
+    <tr>
+        <td><code>BOOLEAN</code></td>
+        <td>Логический тип</td>
+        <td>TRUE/FALSE</td>
+    </tr>
+</table>
+
+<h3>Полезные функции</h3>
+
+<h4>Строковые</h4>
+<ul>
+    <li><code>LENGTH(str)</code>: Длина строки.</li>
+    <li><code>UPPER(str) / LOWER(str)</code>: Регистр.</li>
+    <li><code>SUBSTRING(str, start, len)</code>: Подстрока.</li>
+    <li><code>TRIM(str)</code>: Удаление пробелов.</li>
+    <li><code>CONCAT(a, b)</code>: Конкатенация.</li>
+</ul>
+
+<h4>Числовые</h4>
+<ul>
+    <li><code>ROUND(num, decimals)</code>: Округление.</li>
+    <li><code>FLOOR(num) / CEIL(num)</code>: Округление вниз/вверх.</li>
+    <li><code>ABS(num)</code>: Модуль.</li>
+</ul>
+
+<h4>Даты</h4>
+<ul>
+    <li><code>NOW()</code>: Текущие дата и время.</li>
+    <li><code>DATE_PART('year', date)</code>: Извлечение части даты.</li>
+    <li><code>AGE(date1, date2)</code>: Разница между датами.</li>
+</ul>
+
+<hr>
+
+<p style="text-align: center; font-style: italic; margin-top: 50px;">
+    Документ сгенерирован автоматически для проекта SQL Master Guide.
+</p>
+
+</body>
+</html>
