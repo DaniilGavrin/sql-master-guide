@@ -183,8 +183,10 @@ def create_pdf(input_md, output_pdf):
     print(f"PDF успешно создан: {output_pdf}")
 
 if __name__ == "__main__":
-    input_file = "sql_master_guide_content.md"
-    output_file = "sql_master_guide.pdf"
+    # Запуск из корня проекта или из папки to_print
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    input_file = os.path.join(script_dir, "sql_master_guide_content.md")
+    output_file = os.path.join(script_dir, "sql_master_guide.pdf")
     
     if os.path.exists(input_file):
         create_pdf(input_file, output_file)
