@@ -1,153 +1,97 @@
-import os
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+import os, re
 from reportlab.lib import colors
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.units import cm
 from reportlab.lib.enums import TA_CENTER, TA_LEFT
-from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, PageBreak
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Preformatted
 from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 
-# Настройка шрифтов
-FONT_NAME = 'Arial'
-# Пытаемся найти шрифт Arial в системе
-def find_arial_font():
-    paths_to_check = [
-        '/usr/share/fonts/truetype/liberation2/LiberationSans-Regular.ttf', # Аналог Arial в Linux
-        '/usr/share/fonts/truetype/msttcorefonts/Arial.ttf',
-        '/usr/share/fonts/TTF/DejaVuSans.ttf',
-        '/Library/Fonts/Arial.ttf', # macOS
-        'C:/Windows/Fonts/arial.ttf', # Windows
-        './arial.ttf' # Локально
-    ]
-    for path in paths_to_check:
-        if os.path.exists(path):
-            return path
-    return None
+FONT_NAME = 'Helvetica'
+BOLD_FONT_NAME = 'Helvetica-Bold'
 
-font_path = find_arial_font()
-if font_path:
-    try:
-        pdfmetrics.registerFont(TTFont(FONT_NAME, font_path))
-        print(f"Шрифт найден: {font_path}")
-    except Exception as e:
-        print(f"Ошибка регистрации шрифта: {e}")
-        FONT_NAME = 'Helvetica' # Fallback
-else:
-    print("Шрифт Arial не найден, используем Helvetica")
-    FONT_NAME = 'Helvetica'
+def register_fonts():
+    global FONT_NAME, BOLD_FONT_NAME
+    paths = ['/usr/share/fonts/truetype/liberation2/LiberationSans-Regular.ttf', '/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf']
+    bold_paths = ['/usr/share/fonts/truetype/liberation2/LiberationSans-Bold.ttf', '/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf']
+    for p in paths:
+        if os.path.exists(p):
+            try:
+                pdfmetrics.registerFont(TTFont('CustomFont', p))
+                FONT_NAME = 'CustomFont'
+                print(f"Found font: {p}")
+                break
+            except: pass
+    for p in bold_paths:
+        if os.path.exists(p):
+            try:
+                pdfmetrics.registerFont(TTFont('CustomFontBold', p))
+                BOLD_FONT_NAME = 'CustomFontBold'
+                print(f"Found bold font: {p}")
+                break
+            except: pass
 
-def create_pdf(input_md, output_pdf):
-    doc = SimpleDocTemplate(
-        output_pdf, 
-        pagesize=A4,
-        rightMargin=1.5*cm, 
-        leftMargin=1.5*cm,
-        topMargin=1.5*cm, 
-        bottomMargin=1.5*cm
-    )
-    
+def parse_md(content):
+    lines = content.split('\n')
+    elements = []
+    code_block = []
+    in_code = False
     styles = getSampleStyleSheet()
     
-    # Стили согласно требованиям
-    # Заголовки (##): 12 кегль, по центру, жирный
-    style_h1 = ParagraphStyle(
-        'Heading1_Custom',
-        parent=styles['Heading1'],
-        fontName=f"{FONT_NAME}-Bold",
-        fontSize=12,
-        alignment=TA_CENTER,
-        textColor=colors.black,
-        spaceAfter=14,
-        spaceBefore=14,
-        leading=14
-    )
-    
-    # Подзаголовки (###): 11 кегль, по центру, жирный
-    style_h2 = ParagraphStyle(
-        'Heading2_Custom',
-        parent=styles['Heading2'],
-        fontName=f"{FONT_NAME}-Bold",
-        fontSize=11,
-        alignment=TA_CENTER,
-        textColor=colors.black,
-        spaceAfter=10,
-        spaceBefore=10,
-        leading=13
-    )
-    
-    # Основной текст: 10 кегль, слева
-    style_normal = ParagraphStyle(
-        'Normal_Custom',
-        parent=styles['Normal'],
-        fontName=FONT_NAME,
-        fontSize=10,
-        alignment=TA_LEFT,
-        textColor=colors.black,
-        spaceAfter=4,
-        leading=12
-    )
-    
-    # Стиль для разделителей
-    style_sep = ParagraphStyle(
-        'Separator',
-        parent=style_normal,
-        alignment=TA_CENTER,
-        fontSize=8,
-        spaceAfter=8,
-        spaceBefore=8,
-        textColor=colors.gray
-    )
-
-    story = []
-    
-    try:
-        with open(input_md, 'r', encoding='utf-8') as f:
-            lines = f.readlines()
-    except FileNotFoundError:
-        print(f"Файл {input_md} не найден!")
-        return
+    h1 = ParagraphStyle('H1', parent=styles['Heading1'], fontName=BOLD_FONT_NAME, fontSize=12, alignment=TA_CENTER, spaceAfter=14, leading=14)
+    h2 = ParagraphStyle('H2', parent=styles['Heading2'], fontName=BOLD_FONT_NAME, fontSize=11, alignment=TA_CENTER, spaceAfter=12, leading=13)
+    h3 = ParagraphStyle('H3', parent=styles['Heading3'], fontName=BOLD_FONT_NAME, fontSize=10, alignment=TA_LEFT, spaceAfter=8, leading=12)
+    normal = ParagraphStyle('N', parent=styles['Normal'], fontName=FONT_NAME, fontSize=10, alignment=TA_LEFT, spaceAfter=6, leading=12)
+    code_style = ParagraphStyle('C', parent=styles['Normal'], fontName='Courier', fontSize=9, textColor=colors.darkblue, leftIndent=10, rightIndent=10, backColor=colors.Color(0.95,0.95,0.95), leading=11)
+    sep = ParagraphStyle('S', parent=styles['Normal'], fontName=FONT_NAME, fontSize=8, alignment=TA_CENTER, textColor=colors.gray, spaceAfter=10, spaceBefore=10)
 
     for line in lines:
-        line_stripped = line.strip()
-        if not line_stripped:
-            story.append(Spacer(1, 0.2*cm))
+        if line.startswith('```'):
+            if in_code:
+                txt = '\n'.join(code_block).replace('&','&amp;').replace('<','&lt;').replace('>','&gt;')
+                elements.append(Preformatted(txt, code_style))
+                elements.append(Spacer(1, 0.15*cm))
+                code_block = []
+                in_code = False
+            else:
+                in_code = True
             continue
-        
-        # Обработка заголовков
-        if line_stripped.startswith('# '):
-            # Главный заголовок файла (игнорируем или делаем большим)
-            text = line_stripped[2:]
-            p_style = ParagraphStyle('Title', parent=style_h1, fontSize=16, spaceAfter=20)
-            story.append(Paragraph(text, p_style))
-            story.append(PageBreak())
-        elif line_stripped.startswith('## '):
-            text = line_stripped[3:]
-            story.append(Paragraph(text, style_h1))
-        elif line_stripped.startswith('### '):
-            text = line_stripped[4:]
-            story.append(Paragraph(text, style_h2))
-        elif line_stripped.startswith('---'):
-            story.append(Paragraph('• • •', style_sep))
-            story.append(Spacer(1, 0.3*cm))
+        if in_code:
+            code_block.append(line)
+            continue
+        if not line.strip():
+            elements.append(Spacer(1, 0.1*cm))
+            continue
+        if line.strip() == '---':
+            elements.append(Paragraph('─'*50, sep))
+            elements.append(Spacer(1, 0.2*cm))
+            continue
+        if line.startswith('# '):
+            t = line[2:].strip().replace('&','&amp;').replace('<','&lt;').replace('>','&gt;')
+            elements.append(Paragraph(t, h1))
+            elements.append(Spacer(1, 0.2*cm))
+        elif line.startswith('## '):
+            t = line[3:].strip().replace('&','&amp;').replace('<','&lt;').replace('>','&gt;')
+            elements.append(Paragraph(t, h2))
+        elif line.startswith('### '):
+            t = line[4:].strip().replace('&','&amp;').replace('<','&lt;').replace('>','&gt;')
+            elements.append(Paragraph(t, h3))
         else:
-            # Обычный текст
-            # Убираем символы форматирования markdown, так как они ломают HTML парсер
-            # Заменяем ** и * на пустоту или просто оставляем текст чистым
-            formatted_line = line_stripped.replace('**', '').replace('*', '')
-            # Экранируем специальные HTML символы если они есть
-            formatted_line = formatted_line.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
-            
-            story.append(Paragraph(formatted_line, style_normal))
+            t = line.strip().replace('&','&amp;').replace('<','&lt;').replace('>','&gt;')
+            t = re.sub(r'\*\*(.+?)\*\*', r'<b>\1</b>', t)
+            if t: elements.append(Paragraph(t, normal))
+    return elements
 
-    doc.build(story)
-    print(f"PDF успешно создан: {output_pdf}")
+def create_pdf(inp, out):
+    register_fonts()
+    with open(inp, 'r', encoding='utf-8') as f: content = f.read()
+    elems = parse_md(content)
+    doc = SimpleDocTemplate(out, pagesize=A4, rightMargin=1.5*cm, leftMargin=1.5*cm, topMargin=1.5*cm, bottomMargin=1.5*cm)
+    doc.build(elems)
+    print(f"OK: {out} ({os.path.getsize(out)/1024:.1f} KB)")
 
 if __name__ == "__main__":
-    input_file = "to_print/sql_full_cheatsheet.md"
-    output_file = "to_print/sql_master_guide.pdf"
-    
-    if os.path.exists(input_file):
-        create_pdf(input_file, output_file)
-    else:
-        print(f"Ошибка: Файл {input_file} не найден.")
+    create_pdf("to_print/sql_full_cheatsheet.md", "to_print/sql_master_guide.pdf")
