@@ -1,11 +1,11 @@
 import re
 
 # Чтение Markdown файла
-with open('to_print/sql_master_guide_content.md', 'r', encoding='utf-8') as f:
+with open('sql_master_guide_content.md', 'r', encoding='utf-8') as f:
     md_content = f.read()
 
 # Чтение HTML шаблона
-with open('to_print/template.html', 'r', encoding='utf-8') as f:
+with open('template.html', 'r', encoding='utf-8') as f:
     html_template = f.read()
 
 # Конвертация Markdown в HTML (упрощенная)
@@ -117,7 +117,7 @@ html_content = md_to_html(md_content)
 final_html = html_template.replace('{{ content }}', html_content)
 
 # Сохранение HTML
-with open('to_print/sql_master_guide.html', 'w', encoding='utf-8') as f:
+with open('sql_master_guide.html', 'w', encoding='utf-8') as f:
     f.write(final_html)
 
 print("HTML файл успешно сгенерирован!")
@@ -135,6 +135,6 @@ css = CSS(string='''
     h3 { font-size: 11pt; font-weight: bold }
 ''', font_config=font_config)
 
-HTML(filename='to_print/sql_master_guide.html').write_pdf('to_print/sql_master_guide.pdf', stylesheets=[css], font_config=font_config)
+HTML(filename='sql_master_guide.html').write_pdf('sql_master_guide.pdf', stylesheets=[css], font_config=font_config)
 
-print("PDF файл успешно создан: to_print/sql_master_guide.pdf")
+print("PDF файл успешно создан: sql_master_guide.pdf")
